@@ -1,0 +1,20 @@
+{
+  "name": "simple-budget-express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/corybuecker/simple-budget-express.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/corybuecker/simple-budget-express/issues"
+  },
+  "homepage": "https://github.com/corybuecker/simple-budget-express#readme"
+}
