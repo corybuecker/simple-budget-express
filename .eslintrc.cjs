@@ -4,6 +4,7 @@ module.exports = {
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "prettier",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -13,4 +14,5 @@ module.exports = {
   },
   plugins: ["@typescript-eslint"],
   root: true,
+  ignorePatterns: ["jest.config.js", ".eslintrc.cjs"],
 };
