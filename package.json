@@ -2,10 +2,11 @@
   "name": "simple-budget-express",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "start": "npx nodemon"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,19 @@
   "bugs": {
     "url": "https://github.com/corybuecker/simple-budget-express/issues"
   },
-  "homepage": "https://github.com/corybuecker/simple-budget-express#readme"
+  "homepage": "https://github.com/corybuecker/simple-budget-express#readme",
+  "devDependencies": {
+    "@types/express": "4.17.17",
+    "@types/node": "18.16.3",
+    "@typescript-eslint/eslint-plugin": "5.59.1",
+    "@typescript-eslint/parser": "5.59.1",
+    "eslint": "8.39.0",
+    "nodemon": "2.0.22",
+    "ts-node": "10.9.1",
+    "typescript": "5.0.4",
+    "jest": "29.5.0"
+  },
+  "dependencies": {
+    "express": "4.18.2"
+  }
 }
