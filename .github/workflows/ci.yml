@@ -2,7 +2,7 @@ on: push
 
 jobs:
   ci:
-    runs-on: unbuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
