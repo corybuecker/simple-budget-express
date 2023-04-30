@@ -1,4 +1,21 @@
 html
   head
+    // https://generator.jspm.io/#a2NhYGBiLs7MLchJ1U0qTUlPLdFNrSgoSi0uZihKTUwu0U3Jz3UwtNAz0jPQT87JTM0rgYhDxQCPbzvbQAA
+    script(type="importmap").
+      {
+        "imports": {
+          "react": "https://ga.jspm.io/npm:react@18.2.0/index.js",
+          "react-dom/client": "https://ga.jspm.io/npm:react-dom@18.2.0/client.js"
+        },
+        "scopes": {
+          "https://ga.jspm.io/": {
+            "react-dom": "https://ga.jspm.io/npm:react-dom@18.2.0/index.js",
+            "scheduler": "https://ga.jspm.io/npm:scheduler@0.23.0/index.js"
+          }
+        }
+      }
+    <script async src="https://ga.jspm.io/npm:es-module-shims@1.5.1/dist/es-module-shims.js" crossorigin="anonymous"></script>
+    script(type="module" src=`index.js?v=${(new Date().getMilliseconds())}`)
   body
-    ="test"
+    main
+
