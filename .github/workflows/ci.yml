@@ -18,4 +18,6 @@ jobs:
           cache: npm
 
       - run: npm ci
+      - run: npm outdated
       - run: npm audit
+      - run: npm build
