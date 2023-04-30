@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start:dev": "npx nodemon --ext ts,tsx",
-    "start": "npx tsc --build && node dist/index.js",
+    "start": "npm run build && node dist/index.js",
+    "build": "npx tsc --build",
     "test": "jest"
   },
   "repository": {
