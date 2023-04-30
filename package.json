@@ -3,45 +3,38 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start:dev": "npx nodemon --ext ts,tsx",
+    "start:dev": "npm run vendor:react-router && npx nodemon --ext ts,tsx",
     "start": "npm run build && node dist/index.js",
-    "build": "npx tsc --build",
-    "test": "jest"
+    "build": "npx tsc --build && npm run vendor:react-router",
+    "test": "jest",
+    "vendor:react-router": "npx esbuild --bundle --external:react --format=esm node_modules/react-router-dom/dist/index.js --outfile=./vendor/react-router-dom.js --minify"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/corybuecker/simple-budget-express.git"
   },
-  "author": {
-    "email": "email@corybuecker.com",
-    "name": "Cory Buecker",
-    "url": "https://github.com/corybuecker"
-  },
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/corybuecker/simple-budget-express/issues"
-  },
-  "homepage": "https://github.com/corybuecker/simple-budget-express",
   "devDependencies": {
     "@types/express": "4.17.17",
-    "@types/jest": "29.5.1",
     "@types/node": "18.16.3",
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.1",
     "@typescript-eslint/eslint-plugin": "5.59.1",
     "@typescript-eslint/parser": "5.59.1",
+    "esbuild": "0.17.18",
     "eslint": "8.39.0",
     "eslint-config-prettier": "8.8.0",
     "nodemon": "2.0.22",
     "prettier": "2.8.8",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
     "ts-jest": "29.1.0",
     "ts-node": "10.9.1",
     "typescript": "5.0.4"
   },
   "dependencies": {
     "express": "4.18.2",
-    "pug": "3.0.2"
+    "pug": "3.0.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-router-dom": "6.11.0"
   }
 }
