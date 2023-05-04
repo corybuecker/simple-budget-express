@@ -65,3 +65,4 @@ lib/
 dist/
 public/**/*
 vendor/**/*
+database.sqlite

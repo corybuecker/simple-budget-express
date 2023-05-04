@@ -3,10 +3,8 @@ import Main from './main.js'
 import React, { StrictMode } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { createRoot } from 'react-dom/client'
-import { Accounts } from './routes/accounts.js'
-
-const mainElements = document.getElementsByTagName('main')
-const mainElement = mainElements.item(0)
+import { Account, accountLoader } from './routes/account.js'
+import { Accounts, accountsLoader } from './routes/accounts.js'
 
 const router = createBrowserRouter([
   {
@@ -17,7 +15,10 @@ const router = createBrowserRouter([
   {
     path: '/accounts',
     element: <Main />,
-    children: [{ index: true, element: <Accounts /> }],
+    children: [
+      { index: true, element: <Accounts />, loader: accountsLoader },
+      { path: ':accountId', element: <Account />, loader: accountLoader },
+    ],
     errorElement: <ErrorPage />,
   },
   {
@@ -32,11 +33,8 @@ const router = createBrowserRouter([
   },
 ])
 
-const Router = () => {
-  return
-}
-
-export default Router
+const mainElements = document.getElementsByTagName('main')
+const mainElement = mainElements.item(0)
 
 if (mainElement) {
   createRoot(mainElement).render(
