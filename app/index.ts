@@ -1,7 +1,6 @@
 import express from 'express'
 import { createHash } from 'crypto'
 import apiRouter from './routers/api'
-import ImportMapGenerator from './import_map_generator'
 
 const port = process.env.PORT || 3000
 const application = express()
@@ -15,8 +14,6 @@ application.use(express.static('./vendor'))
 application.locals.fingerprint = (input: string) => {
   return `${input}?v=${cacheFingerprint}`
 }
-const importMapGenerater: ImportMapGenerator = new ImportMapGenerator()
-application.locals.importMap = importMapGenerater.toString()
 
 application.set('views', 'app/views')
 application.set('view engine', 'pug')
