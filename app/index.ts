@@ -1,6 +1,7 @@
-import express from 'express'
+import express, { RequestHandler } from 'express'
 import { createHash } from 'crypto'
 import apiRouter from './routers/api'
+import { Database } from './services/database'
 
 const port = process.env.PORT || 3000
 const application = express()
@@ -20,7 +21,7 @@ application.set('view engine', 'pug')
 application.use('/api', apiRouter)
 
 application.get(
-  ['/', '/accounts', '/goals', '/savings', '/reports'],
+  ['/', '/accounts', '/accounts/*', '/goals', '/savings', '/reports'],
   (_req, res) => {
     res.render('index')
   }
