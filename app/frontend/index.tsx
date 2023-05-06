@@ -3,7 +3,12 @@ import Main from './main.js'
 import React, { StrictMode } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { createRoot } from 'react-dom/client'
-import { Account, accountLoader } from './routes/account.js'
+import {
+  accountLoader,
+  createAction as accountCreateAction,
+  EditAccount,
+  NewAccount,
+} from './routes/account.js'
 import { Accounts, accountsLoader } from './routes/accounts.js'
 
 const router = createBrowserRouter([
@@ -17,7 +22,17 @@ const router = createBrowserRouter([
     element: <Main />,
     children: [
       { index: true, element: <Accounts />, loader: accountsLoader },
-      { path: ':accountId', element: <Account />, loader: accountLoader },
+      {
+        path: 'new',
+        element: <NewAccount />,
+        action: accountCreateAction,
+      },
+      {
+        path: ':accountId',
+        element: <EditAccount />,
+        loader: accountLoader,
+        action: accountCreateAction,
+      },
     ],
     errorElement: <ErrorPage />,
   },

@@ -1,5 +1,14 @@
 import 'reflect-metadata'
 import { DataSource } from 'typeorm'
+import { DataSourceOptions } from 'typeorm/data-source/DataSourceOptions'
+
+export const dataSourceOptions: DataSourceOptions = {
+  database: './database.sqlite',
+  entities: ['./dist/app/entities/*.js', './app/entities/*.ts'],
+  logging: true,
+  synchronize: false,
+  type: 'sqlite',
+}
 
 export class Database {
   private static dataSource: DataSource
@@ -8,28 +17,20 @@ export class Database {
     throw new Error()
   }
 
-  static getDataSource() {
+  static async getDataSource() {
     if (Database.dataSource === undefined) {
-      Database.dataSource = new DataSource({
-        database: './database.sqlite',
-        entities: ['../entities/*'],
-        logging: true,
-        migrations: ['./migrations/*'],
-        migrationsTableName: 'schema_migrations',
-        synchronize: false,
-        type: 'sqlite',
-      })
+      Database.dataSource = new DataSource(dataSourceOptions)
+    }
+
+    if (!Database.dataSource.isInitialized) {
+      await Database.dataSource.initialize()
     }
 
     return Database.dataSource
   }
 
   static async getEntityManager() {
-    const dataSource = Database.getDataSource()
-
-    if (!dataSource.isInitialized) {
-      await dataSource.initialize()
-    }
+    const dataSource = await Database.getDataSource()
 
     return dataSource.manager
   }
