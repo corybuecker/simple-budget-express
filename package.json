@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "start:dev": "npx nodemon --ext ts,tsx",
-    "start": "npm run build && node dist/index.js",
+    "start": "npm run build && ts-node app/index.ts",
     "build": "npm run vendor:react-router && npx tsc --build",
     "test": "jest",
     "vendor:react-router": "npx esbuild --bundle --external:react --format=esm node_modules/react-router-dom/dist/index.js --outfile=./vendor/react-router-dom.js --minify",
@@ -11,11 +11,12 @@
   },
   "devDependencies": {
     "@types/express": "4.17.17",
-    "@types/node": "20.1.0",
+    "@types/morgan": "1.9.4",
+    "@types/node": "20.1.1",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
-    "@typescript-eslint/eslint-plugin": "5.59.2",
-    "@typescript-eslint/parser": "5.59.2",
+    "@typescript-eslint/eslint-plugin": "5.59.5",
+    "@typescript-eslint/parser": "5.59.5",
     "esbuild": "0.17.18",
     "eslint": "8.40.0",
     "eslint-config-prettier": "8.8.0",
@@ -34,7 +35,7 @@
     "react-router-dom": "6.11.1",
     "reflect-metadata": "0.1.13",
     "sqlite3": "5.1.6",
-    "typeorm": "0.3.15",
+    "typeorm": "0.3.16",
     "uuid": "9.0.0"
   }
 }

@@ -13,6 +13,7 @@ export const Accounts = () => {
   const accounts = useLoaderData() as Account[]
   return (
     <div>
+      <Link to={'new'}>New</Link>
       {accounts.map((account) => (
         <div key={account.id}>
           <Link to={account.id}>Account {account.id}</Link>
