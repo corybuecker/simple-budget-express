@@ -1,8 +1,8 @@
-import React from 'react'
+import * as React from 'react'
 import { Outlet } from 'react-router-dom'
-import Nav from './nav.js'
+import Nav from './nav'
 
-const Main = () => {
+const Main = (): React.JSX.Element => {
   return (
     <>
       <Nav></Nav>

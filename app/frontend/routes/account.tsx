@@ -1,38 +1,6 @@
-import React from 'react'
-import {
-  ActionFunctionArgs,
-  Form,
-  LoaderFunctionArgs,
-  Params,
-  useLoaderData,
-} from 'react-router-dom'
-
-export type Account = {
-  id: string
-  name: string
-  amount: number
-}
-
-export const accountLoader = async ({
-  params: { accountId },
-}: LoaderFunctionArgs) => {
-  if (accountId === undefined) {
-    throw new Error('missing account id')
-  }
-  const rawAccount = await fetch(`/api/accounts/${accountId}`)
-  return (await rawAccount.json()) as Account
-}
-
-export const createAction = async ({ request }: ActionFunctionArgs) => {
-  const data = Object.fromEntries(await request.formData())
-
-  const response = await fetch(`/api/accounts`, {
-    method: 'post',
-    body: JSON.stringify(data),
-    headers: { 'Content-Type': 'application/json' },
-  })
-  return (await response.json()) as Account
-}
+import * as React from 'react'
+import { Form, useLoaderData } from 'react-router-dom'
+import { Account } from '../loaders/accounts'
 
 export const EditAccount = () => {
   const account = useLoaderData() as Account
