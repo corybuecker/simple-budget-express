@@ -1,7 +1,7 @@
-import React from 'react'
+import * as React from 'react'
 import { useRouteError } from 'react-router-dom'
 
-export default function ErrorPage() {
+const ErrorPage = (): React.JSX.Element => {
   const error = useRouteError() as Error
 
   return (
@@ -14,3 +14,5 @@ export default function ErrorPage() {
     </div>
   )
 }
+
+export default ErrorPage

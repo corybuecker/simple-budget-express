@@ -1,15 +1,16 @@
-import ErrorPage from './errors.js'
-import Main from './main.js'
-import React, { StrictMode } from 'react'
+import { StrictMode } from 'react'
+import ErrorPage from './errors'
+import Main from './main'
+import * as React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { createRoot } from 'react-dom/client'
+import { EditAccount, NewAccount } from './routes/account'
 import {
-  accountLoader,
-  createAction as accountCreateAction,
-  EditAccount,
-  NewAccount,
-} from './routes/account.js'
-import { Accounts, accountsLoader } from './routes/accounts.js'
+  accounts as accountsLoader,
+  account as accountLoader,
+} from './loaders/accounts'
+import { Accounts } from './routes/accounts'
+import { createAccountAction, updateAccountAction } from './actions/accounts'
 
 const router = createBrowserRouter([
   {
@@ -25,13 +26,13 @@ const router = createBrowserRouter([
       {
         path: 'new',
         element: <NewAccount />,
-        action: accountCreateAction,
+        action: createAccountAction,
       },
       {
         path: ':accountId',
         element: <EditAccount />,
         loader: accountLoader,
-        action: accountCreateAction,
+        action: updateAccountAction,
       },
     ],
     errorElement: <ErrorPage />,

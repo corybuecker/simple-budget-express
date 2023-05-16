@@ -64,6 +64,8 @@ TEST-results.xml
 lib/
 dist/
 public/**/*
-vendor/**/*
 database.sqlite
 .env
+/app/frontend/**/*.js
+/app/frontend/tsconfig.tsbuildinfo
+/app/frontend/**/*.d.ts
