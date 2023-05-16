@@ -56,6 +56,7 @@ const Nav = (): React.JSX.Element => {
           >
             Goals
           </NavLink>
+          <NavLink to={'/authentication'}>Auth</NavLink>
         </div>
       </div>
     </nav>

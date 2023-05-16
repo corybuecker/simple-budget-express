@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { NextFunction, Router } from 'express'
 import { BaseClient, Issuer } from 'openid-client'
 import { Request } from 'express'
 import { generators } from 'openid-client'
@@ -34,47 +34,61 @@ const loadClient = async (): Promise<BaseClient> => {
 const authenticationRouter: Router = Router({ strict: true })
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-authenticationRouter.get('/', async (req, res) => {
-  const nonce = generators.nonce()
+authenticationRouter.get('/', async (req, res, next: NextFunction) => {
+  try {
+    const nonce = generators.nonce()
+    const client = await loadClient()
 
-  req.session.nonce = nonce
+    req.session.regenerate(() => {
+      req.session.nonce = nonce
 
-  const client = await loadClient()
-
-  return res.redirect(
-    client.authorizationUrl({
-      redirect_uri: 'http://localhost:3000/authentication/callback',
-      scope: 'email',
-      code_challenge: generators.codeChallenge(nonce),
+      res.redirect(
+        client.authorizationUrl({
+          redirect_uri: 'http://localhost:3000/authentication/callback',
+          scope: 'email',
+          code_challenge: generators.codeChallenge(nonce),
+        })
+      )
     })
-  )
+  } catch (error) {
+    next(error)
+  }
 })
 
 authenticationRouter.get(
   '/callback',
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  async (req: Request<GoogleCallback>, res) => {
-    if (req.session.nonce === undefined) {
-      return res.sendStatus(400)
-    }
-    const codeVerifier = req.session.nonce
-    req.session.regenerate((error) => console.log(error))
-
+  async (req: Request<GoogleCallback>, res, next: NextFunction) => {
     try {
-      const client = await loadClient()
-      const params = client.callbackParams(req)
-      const tokenSet = await client.callback(
-        'http://localhost:3000/authentication/callback',
-        params,
-        { code_verifier: generators.codeChallenge(codeVerifier) }
-      )
+      if (req.session.nonce === undefined) {
+        throw Error('reset session?')
+      }
+      const codeVerifier = req.session.nonce
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      req.session.regenerate(async () => {
+        try {
+          const client = await loadClient()
+          const params = client.callbackParams(req)
+          const tokenSet = await client.callback(
+            'http://localhost:3000/authentication/callback',
+            params,
+            { code_verifier: generators.codeChallenge(codeVerifier) }
+          )
+          const userInfo = await client.userinfo<UserInfo>(tokenSet)
 
-      req.session.userInfo = await client.userinfo<UserInfo>(tokenSet)
+          if (!userInfo.email_verified) {
+            throw Error('email must be verified')
+          }
 
-      return res.sendStatus(200)
+          req.session.userInfo = userInfo
+
+          res.redirect('/')
+        } catch (error) {
+          next(error)
+        }
+      })
     } catch (error) {
-      console.log(error)
-      return res.status(500).send('cannot authenticate')
+      next(error)
     }
   }
 )

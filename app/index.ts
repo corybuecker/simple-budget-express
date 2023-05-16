@@ -7,10 +7,6 @@ import { TypeormStore } from 'connect-typeorm'
 import { Database } from './services/database'
 import ExpressSession from 'express-session'
 
-if (process.env.COOKIE_SECRET === undefined) {
-  throw Error('must set COOKIE_SECRET')
-}
-
 const port = process.env.PORT || 3000
 const application = express()
 const sessionStore = new TypeormStore({ cleanupLimit: 0 })
@@ -32,16 +28,17 @@ application.set('view engine', 'pug')
 
 Database.getDataSource()
   .then((dataSource) => {
+    if (process.env.COOKIE_SECRET === undefined) {
+      throw Error('must set COOKIE_SECRET')
+    }
+
     sessionStore.connect(dataSource.getRepository(Session))
     application.use(
       ExpressSession({
         resave: false,
         saveUninitialized: false,
         store: sessionStore,
-        secret: [
-          process.env.COOKIE_SECRET || '',
-          process.env.COOKIE_SECRET_B || '',
-        ],
+        secret: [process.env.COOKIE_SECRET],
       })
     )
     application.use('/api/accounts', accountsRouter)
