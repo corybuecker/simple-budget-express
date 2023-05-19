@@ -1,6 +1,6 @@
 html
     head
-        //https://generator.jspm.io/#a2NhYGBiLs7MLchJ1U0qTUlPLdFNrSgoSi0uZihKTUwu0U3Jz3UwtNAz0jPQT87JTM0rgYhDxQCPbzvbQAA
+        // https://generator.jspm.io/#a2NhYGBmL87MLchJ1U0qTUlPLdFNrSgoSi0uZkjOSSwu1i1LzMlMSSzJL3Iw0DM00TNgKEpNTC7RTcnPdTC00DPSM9BPzslMzSuBiEPFABFa8PRXAA
         script(type="importmap").
             {
               "imports": {
@@ -81,8 +81,8 @@ html
                 }
               }
             }
-        script(type="module" src=fingerprint('/frontend.js'))
+        script(type='module' src=fingerprint('/frontend.js'))
+        link(rel='stylesheet' href='https://rsms.me/inter/inter.css')
         link(href=fingerprint('/app.css') rel='stylesheet')
     body
         main
-        script(src="https://accounts.google.com/gsi/client")

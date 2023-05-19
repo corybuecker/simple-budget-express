@@ -1,8 +1,15 @@
 /** @type {import('tailwindcss').Config} */
+
+import defaultTheme from 'tailwindcss/defaultTheme'
+
 module.exports = {
-  content: ['app/**/*'],
+  content: ['src/**/*'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+      },
+    },
   },
   plugins: [],
 }

@@ -23,7 +23,7 @@ application.locals.fingerprint = (input: string) => {
   return `${input}?v=${cacheFingerprint}`
 }
 
-application.set('views', 'app/views')
+application.set('views', 'src/views')
 application.set('view engine', 'pug')
 
 Database.getDataSource()

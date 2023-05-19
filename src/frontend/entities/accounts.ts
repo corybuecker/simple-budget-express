@@ -1,18 +1,19 @@
 import {
   IsBoolean,
-  IsInt,
+  IsNumber,
   IsOptional,
   IsUUID,
   Length,
   Min,
   validate,
 } from 'class-validator'
+import { ValidationError } from 'class-validator/types/validation/ValidationError'
 
 export type Account = {
   id?: string
   name: string
   amount: number
-  debt?: boolean
+  debt: boolean
 }
 
 export class AccountValidator {
@@ -23,7 +24,7 @@ export class AccountValidator {
   @Length(1, 255)
   public name: string
 
-  @IsInt()
+  @IsNumber()
   @Min(1)
   public amount: number
 
@@ -38,7 +39,7 @@ export class AccountValidator {
     this.debt = debt ?? false
   }
 
-  public async validate() {
+  public async validate(): Promise<ValidationError[]> {
     return validate(this)
   }
 }

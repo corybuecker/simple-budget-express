@@ -1,13 +1,13 @@
 import { DataSource } from 'typeorm'
-import { User } from '../app/entities/user'
-import { dataSourceOptions } from '../app/services/database'
+import { User } from '../src/entities/user'
+import { dataSourceOptions } from '../src/services/database'
 
 const seedEmail = process.env.SEED_EMAIL || 'example@example.com'
 
 const seed = async () => {
   const dataSource = new DataSource({
     ...dataSourceOptions,
-    entities: ['./app/entities/*.ts'],
+    entities: ['./src/entities/*.ts'],
   })
 
   const repo = (await dataSource.initialize()).getRepository(User)
