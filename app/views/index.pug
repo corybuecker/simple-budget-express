@@ -3,16 +3,83 @@ html
         //https://generator.jspm.io/#a2NhYGBiLs7MLchJ1U0qTUlPLdFNrSgoSi0uZihKTUwu0U3Jz3UwtNAz0jPQT87JTM0rgYhDxQCPbzvbQAA
         script(type="importmap").
             {
-                "imports": {
-                    "react": "https://ga.jspm.io/npm:react@18.2.0/index.js",
-                    "react-dom/client": "https://ga.jspm.io/npm:react-dom@18.2.0/client.js"
-                },
-                "scopes": {
-                    "https://ga.jspm.io/": {
-                        "react-dom": "https://ga.jspm.io/npm:react-dom@18.2.0/index.js",
-                        "scheduler": "https://ga.jspm.io/npm:scheduler@0.23.0/index.js"
-                    }
+              "imports": {
+                "class-validator": "https://ga.jspm.io/npm:class-validator@0.14.0/esm5/index.js",
+                "react": "https://ga.jspm.io/npm:react@18.2.0/index.js",
+                "react-dom/client": "https://ga.jspm.io/npm:react-dom@18.2.0/client.js"
+              },
+              "scopes": {
+                "https://ga.jspm.io/": {
+                  "libphonenumber-js": "https://ga.jspm.io/npm:libphonenumber-js@1.10.30/index.js",
+                  "react-dom": "https://ga.jspm.io/npm:react-dom@18.2.0/index.js",
+                  "scheduler": "https://ga.jspm.io/npm:scheduler@0.23.0/index.js",
+                  "validator": "https://ga.jspm.io/npm:validator@13.9.0/index.js",
+                  "validator/lib/contains": "https://ga.jspm.io/npm:validator@13.9.0/lib/contains.js",
+                  "validator/lib/isAlpha": "https://ga.jspm.io/npm:validator@13.9.0/lib/isAlpha.js",
+                  "validator/lib/isAlphanumeric": "https://ga.jspm.io/npm:validator@13.9.0/lib/isAlphanumeric.js",
+                  "validator/lib/isAscii": "https://ga.jspm.io/npm:validator@13.9.0/lib/isAscii.js",
+                  "validator/lib/isBIC": "https://ga.jspm.io/npm:validator@13.9.0/lib/isBIC.js",
+                  "validator/lib/isBase32": "https://ga.jspm.io/npm:validator@13.9.0/lib/isBase32.js",
+                  "validator/lib/isBase58": "https://ga.jspm.io/npm:validator@13.9.0/lib/isBase58.js",
+                  "validator/lib/isBase64": "https://ga.jspm.io/npm:validator@13.9.0/lib/isBase64.js",
+                  "validator/lib/isBoolean": "https://ga.jspm.io/npm:validator@13.9.0/lib/isBoolean.js",
+                  "validator/lib/isBtcAddress": "https://ga.jspm.io/npm:validator@13.9.0/lib/isBtcAddress.js",
+                  "validator/lib/isByteLength": "https://ga.jspm.io/npm:validator@13.9.0/lib/isByteLength.js",
+                  "validator/lib/isCreditCard": "https://ga.jspm.io/npm:validator@13.9.0/lib/isCreditCard.js",
+                  "validator/lib/isCurrency": "https://ga.jspm.io/npm:validator@13.9.0/lib/isCurrency.js",
+                  "validator/lib/isDataURI": "https://ga.jspm.io/npm:validator@13.9.0/lib/isDataURI.js",
+                  "validator/lib/isDecimal": "https://ga.jspm.io/npm:validator@13.9.0/lib/isDecimal.js",
+                  "validator/lib/isDivisibleBy": "https://ga.jspm.io/npm:validator@13.9.0/lib/isDivisibleBy.js",
+                  "validator/lib/isEAN": "https://ga.jspm.io/npm:validator@13.9.0/lib/isEAN.js",
+                  "validator/lib/isEmail": "https://ga.jspm.io/npm:validator@13.9.0/lib/isEmail.js",
+                  "validator/lib/isEthereumAddress": "https://ga.jspm.io/npm:validator@13.9.0/lib/isEthereumAddress.js",
+                  "validator/lib/isFQDN": "https://ga.jspm.io/npm:validator@13.9.0/lib/isFQDN.js",
+                  "validator/lib/isFullWidth": "https://ga.jspm.io/npm:validator@13.9.0/lib/isFullWidth.js",
+                  "validator/lib/isHSL": "https://ga.jspm.io/npm:validator@13.9.0/lib/isHSL.js",
+                  "validator/lib/isHalfWidth": "https://ga.jspm.io/npm:validator@13.9.0/lib/isHalfWidth.js",
+                  "validator/lib/isHash": "https://ga.jspm.io/npm:validator@13.9.0/lib/isHash.js",
+                  "validator/lib/isHexColor": "https://ga.jspm.io/npm:validator@13.9.0/lib/isHexColor.js",
+                  "validator/lib/isHexadecimal": "https://ga.jspm.io/npm:validator@13.9.0/lib/isHexadecimal.js",
+                  "validator/lib/isIBAN": "https://ga.jspm.io/npm:validator@13.9.0/lib/isIBAN.js",
+                  "validator/lib/isIP": "https://ga.jspm.io/npm:validator@13.9.0/lib/isIP.js",
+                  "validator/lib/isISBN": "https://ga.jspm.io/npm:validator@13.9.0/lib/isISBN.js",
+                  "validator/lib/isISIN": "https://ga.jspm.io/npm:validator@13.9.0/lib/isISIN.js",
+                  "validator/lib/isISO31661Alpha2": "https://ga.jspm.io/npm:validator@13.9.0/lib/isISO31661Alpha2.js",
+                  "validator/lib/isISO31661Alpha3": "https://ga.jspm.io/npm:validator@13.9.0/lib/isISO31661Alpha3.js",
+                  "validator/lib/isISO4217": "https://ga.jspm.io/npm:validator@13.9.0/lib/isISO4217.js",
+                  "validator/lib/isISO8601": "https://ga.jspm.io/npm:validator@13.9.0/lib/isISO8601.js",
+                  "validator/lib/isISRC": "https://ga.jspm.io/npm:validator@13.9.0/lib/isISRC.js",
+                  "validator/lib/isISSN": "https://ga.jspm.io/npm:validator@13.9.0/lib/isISSN.js",
+                  "validator/lib/isIdentityCard": "https://ga.jspm.io/npm:validator@13.9.0/lib/isIdentityCard.js",
+                  "validator/lib/isJSON": "https://ga.jspm.io/npm:validator@13.9.0/lib/isJSON.js",
+                  "validator/lib/isJWT": "https://ga.jspm.io/npm:validator@13.9.0/lib/isJWT.js",
+                  "validator/lib/isLatLong": "https://ga.jspm.io/npm:validator@13.9.0/lib/isLatLong.js",
+                  "validator/lib/isLength": "https://ga.jspm.io/npm:validator@13.9.0/lib/isLength.js",
+                  "validator/lib/isLocale": "https://ga.jspm.io/npm:validator@13.9.0/lib/isLocale.js",
+                  "validator/lib/isLowercase": "https://ga.jspm.io/npm:validator@13.9.0/lib/isLowercase.js",
+                  "validator/lib/isMACAddress": "https://ga.jspm.io/npm:validator@13.9.0/lib/isMACAddress.js",
+                  "validator/lib/isMagnetURI": "https://ga.jspm.io/npm:validator@13.9.0/lib/isMagnetURI.js",
+                  "validator/lib/isMimeType": "https://ga.jspm.io/npm:validator@13.9.0/lib/isMimeType.js",
+                  "validator/lib/isMobilePhone": "https://ga.jspm.io/npm:validator@13.9.0/lib/isMobilePhone.js",
+                  "validator/lib/isMongoId": "https://ga.jspm.io/npm:validator@13.9.0/lib/isMongoId.js",
+                  "validator/lib/isMultibyte": "https://ga.jspm.io/npm:validator@13.9.0/lib/isMultibyte.js",
+                  "validator/lib/isNumeric": "https://ga.jspm.io/npm:validator@13.9.0/lib/isNumeric.js",
+                  "validator/lib/isOctal": "https://ga.jspm.io/npm:validator@13.9.0/lib/isOctal.js",
+                  "validator/lib/isPassportNumber": "https://ga.jspm.io/npm:validator@13.9.0/lib/isPassportNumber.js",
+                  "validator/lib/isPort": "https://ga.jspm.io/npm:validator@13.9.0/lib/isPort.js",
+                  "validator/lib/isPostalCode": "https://ga.jspm.io/npm:validator@13.9.0/lib/isPostalCode.js",
+                  "validator/lib/isRFC3339": "https://ga.jspm.io/npm:validator@13.9.0/lib/isRFC3339.js",
+                  "validator/lib/isRgbColor": "https://ga.jspm.io/npm:validator@13.9.0/lib/isRgbColor.js",
+                  "validator/lib/isSemVer": "https://ga.jspm.io/npm:validator@13.9.0/lib/isSemVer.js",
+                  "validator/lib/isSurrogatePair": "https://ga.jspm.io/npm:validator@13.9.0/lib/isSurrogatePair.js",
+                  "validator/lib/isTaxID": "https://ga.jspm.io/npm:validator@13.9.0/lib/isTaxID.js",
+                  "validator/lib/isURL": "https://ga.jspm.io/npm:validator@13.9.0/lib/isURL.js",
+                  "validator/lib/isUUID": "https://ga.jspm.io/npm:validator@13.9.0/lib/isUUID.js",
+                  "validator/lib/isUppercase": "https://ga.jspm.io/npm:validator@13.9.0/lib/isUppercase.js",
+                  "validator/lib/isVariableWidth": "https://ga.jspm.io/npm:validator@13.9.0/lib/isVariableWidth.js",
+                  "validator/lib/matches": "https://ga.jspm.io/npm:validator@13.9.0/lib/matches.js"
                 }
+              }
             }
         script(type="module" src=fingerprint('/frontend.js'))
         link(href=fingerprint('/app.css') rel='stylesheet')

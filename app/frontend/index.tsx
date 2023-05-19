@@ -11,6 +11,7 @@ import {
 } from './loaders/accounts'
 import { Accounts } from './routes/accounts'
 import { createAccountAction, updateAccountAction } from './actions/accounts'
+import Authentication from './routes/authentication'
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
     element: <Main />,
     errorElement: <ErrorPage />,
   },
+  { path: '/authentication', element: <Authentication /> },
   {
     path: '/accounts',
     element: <Main />,
