@@ -1,37 +1,29 @@
-import 'reflect-metadata'
-import { DataSource } from 'typeorm'
-import { DataSourceOptions } from 'typeorm/data-source/DataSourceOptions'
+import { Sequelize } from 'sequelize-typescript'
+import { SequelizeOptions } from 'sequelize-typescript/dist/sequelize/sequelize/sequelize-options'
+import { Account } from '../models/account'
+import { User } from '../models/user'
+import { Session } from '../models/session'
 
-export const dataSourceOptions: DataSourceOptions = {
-  database: './database.sqlite',
-  entities: ['./dist/src/entities/*.js', './src/entities/*.ts'],
-  logging: true,
-  synchronize: false,
-  type: 'sqlite',
+export const connectionOptions: SequelizeOptions = {
+  dialect: 'sqlite',
+  storage: './database.sqlite',
+  models: [Account, User, Session],
 }
 
 export class Database {
-  private static dataSource: DataSource
+  private static connection: Sequelize
 
   private constructor() {
     throw new Error()
   }
 
-  static async getDataSource() {
-    if (Database.dataSource === undefined) {
-      Database.dataSource = new DataSource(dataSourceOptions)
+  static async getConnection() {
+    if (!this.connection) {
+      this.connection = new Sequelize(connectionOptions)
     }
 
-    if (!Database.dataSource.isInitialized) {
-      await Database.dataSource.initialize()
-    }
+    await this.connection.databaseVersion()
 
-    return Database.dataSource
-  }
-
-  static async getEntityManager() {
-    const dataSource = await Database.getDataSource()
-
-    return dataSource.manager
+    return this.connection
   }
 }
