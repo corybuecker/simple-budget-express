@@ -1,11 +1,12 @@
 import { ValidationError } from 'class-validator/types/validation/ValidationError'
 import { Dispatch, SetStateAction } from 'react'
 import * as React from 'react'
+import { JSX } from 'react'
 
 export type FormError<T> =
   | Record<string, never>
   | {
-      [K in keyof T]: string
+      [K in keyof T]: JSX.Element
     }
 
 export type FormValidator = (fd: FormData) => Promise<ValidationError[]>
@@ -26,7 +27,9 @@ export function buildFormValidator<T>(
     const mappedErrors = errors.reduce((memo, error) => {
       return {
         ...memo,
-        [error.property]: Object.values(error.constraints ?? {}).join(', '),
+        [error.property]: (
+          <span>{Object.values(error.constraints ?? {}).join(', ')}</span>
+        ),
       }
     }, {})
 

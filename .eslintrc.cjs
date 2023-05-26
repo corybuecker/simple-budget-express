@@ -21,4 +21,7 @@ module.exports = {
         'vendor/**/*',
         'tailwind.config.js',
     ],
+    "rules": {
+        "@typescript-eslint/no-misused-promises": "off"
+    }
 }
