@@ -1,66 +1,85 @@
-import express from 'express'
-import { createHash } from 'crypto'
-import { Session } from './entities/session'
-import accountsRouter from './routers/accounts'
-import authenticationRouter from './routers/authentication'
-import { TypeormStore } from 'connect-typeorm'
+import registerAccountsController from './controllers/accounts'
+import fastify from 'fastify'
 import { Database } from './services/database'
-import ExpressSession from 'express-session'
+import fastifySession from '@fastify/session'
+import fastifyCookie from '@fastify/cookie'
+import SessionStore from './services/session_store'
+import { User } from './models/user'
+import registerAuthenticationController from './controllers/authentication'
+import fastifyStatic from '@fastify/static'
+import path from 'path'
+import { compileFile } from 'pug'
 
-const port = process.env.PORT || 3000
-const application = express()
-const sessionStore = new TypeormStore({ cleanupLimit: 0 })
-const cacheFingerprint = createHash('md5')
-  .update(Math.random().toString())
-  .digest('hex')
+type ApplicationLocals = {
+  user: User
+} | null
 
-application.use(express.json())
-
-application.use(express.static('./public'))
-application.use(express.static('./static'))
-
-application.locals.fingerprint = (input: string) => {
-  return `${input}?v=${cacheFingerprint}`
+declare module 'fastify' {
+  interface FastifyRequest {
+    locals: ApplicationLocals
+  }
 }
 
-application.set('views', 'src/views')
-application.set('view engine', 'pug')
+const port = process.env.PORT || 3000
+const application = fastify({
+  logger: true,
+})
 
-Database.getDataSource()
-  .then((dataSource) => {
-    if (process.env.COOKIE_SECRET === undefined) {
-      throw Error('must set COOKIE_SECRET')
-    }
+const startServer = async () => {
+  if (!process.env.COOKIE_SECRET) {
+    throw Error('must set COOKIE_SECRET')
+  }
 
-    sessionStore.connect(dataSource.getRepository(Session))
-    application.use(
-      ExpressSession({
-        resave: false,
-        saveUninitialized: false,
-        store: sessionStore,
-        secret: [process.env.COOKIE_SECRET],
-      })
-    )
-    application.use('/api/accounts', accountsRouter)
-    application.use('/authentication', authenticationRouter)
-
-    application.get(
-      [
-        '/',
-        '/accounts',
-        '/accounts/*',
-        '/goals',
-        '/savings',
-        '/reports',
-        '/authentication',
-      ],
-      (_req, res) => {
-        return res.render('index')
-      }
-    )
-
-    application.listen(port, () => {
-      console.log(`App listening on port ${port}`)
-    })
+  const connection = await Database.getConnection()
+  await application.register(fastifyStatic, {
+    root: path.join(__dirname, '../public'),
   })
-  .catch((error) => console.log(error))
+
+  application.get('/frontend.js', async (req, reply) => {
+    await reply.sendFile('frontend.js')
+    return
+  })
+
+  application.get('/app.css', async (req, reply) => {
+    await reply.sendFile('app.css')
+    return
+  })
+
+  await application.register(fastifyCookie)
+  await application.register(fastifySession, {
+    cookieName: 'sessionId',
+    secret: process.env.COOKIE_SECRET,
+    rolling: true,
+    cookie: { secure: process.env.ENV === 'production' },
+    store: new SessionStore(connection),
+  })
+
+  application.addHook('onClose', (_, done) =>
+    connection
+      .close()
+      .then(() => done())
+      .catch(done)
+  )
+
+  application.decorateRequest<ApplicationLocals>('locals', null)
+  application.addHook('onRequest', (request, reply, done) => {
+    request.locals = null
+    return done()
+  })
+
+  registerAuthenticationController(application)
+  registerAccountsController(application)
+
+  const template = compileFile('./src/views/index.pug')
+
+  application.get('/accounts*', async (request, reply) => {
+    await reply.type('text/html').send(template())
+  })
+
+  await application.listen({ port: Number(port), host: '0.0.0.0' })
+}
+
+startServer().catch((err) => {
+  application.log.error(err)
+  process.exit(1)
+})
