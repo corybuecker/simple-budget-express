@@ -24,7 +24,7 @@ export class User extends Model {
   @Column({ type: DataType.STRING, allowNull: false })
   declare email: string
 
-  @HasMany(() => Account)
+  @HasMany(() => Account, { onDelete: 'CASCADE' })
   declare accounts: Account[]
 
   @CreatedAt
