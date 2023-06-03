@@ -1,30 +1,30 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { User } from '../models/user'
+import { AccountsControllerRequestTypes } from './accounts'
 
-type UnauthenticatedRoute<ResponseT, BodyT, ParamsT> = {
+export type RequestT = AccountsControllerRequestTypes
+
+type UnauthenticatedRoute<T> = {
   method: 'GET' | 'POST' | 'PUT'
   url: string
   handler: (
-    request: FastifyRequest<{ Body: BodyT; Params: ParamsT }>,
+    request: FastifyRequest<RequestT>,
     reply: FastifyReply
-  ) => Promise<ResponseT>
+  ) => Promise<T>
+  additionalRelationsForUser: string[]
 }
 
-export type AuthenticatedRoute<ResponseT, BodyT, ParamsT> =
-  UnauthenticatedRoute<ResponseT, BodyT, ParamsT> & {
-    preHandler: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
-  }
+export type AuthenticatedRoute<T> = Omit<
+  UnauthenticatedRoute<T>,
+  'additionalRelationsForUser'
+> & {
+  preHandler: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
+}
 
-class AuthenticatedRouteFactory<
-  ResponseT,
-  BodyT = undefined,
-  ParamsT = undefined
-> {
-  constructor(
-    private readonly route: UnauthenticatedRoute<ResponseT, BodyT, ParamsT>
-  ) {}
+class AuthenticatedRouteFactory<T> {
+  constructor(private readonly route: UnauthenticatedRoute<T>) {}
 
-  public authenticated(): AuthenticatedRoute<ResponseT, BodyT, ParamsT> {
+  public authenticated(): AuthenticatedRoute<T> {
     return {
       url: this.route.url,
       method: this.route.method,
@@ -45,6 +45,7 @@ class AuthenticatedRouteFactory<
 
       const user = await User.findOne({
         where: { email: request.session.simpleBudgetSession?.email },
+        include: this.route.additionalRelationsForUser,
       })
 
       if (!user) {

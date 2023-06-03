@@ -75,7 +75,10 @@ export default class SessionStore
       const currentTime = new Date()
       const newExpiration = new Date(currentTime.getTime() + SESSION_LIFETIME)
 
-      const session = await this.fetchUnexpiredSession(sessionId)
+      const session = await SessionModel.findOne({
+        where: { sessionId, expiredAt: { [Op.gt]: new Date() } },
+        transaction: t,
+      })
 
       if (!session) {
         await SessionModel.create({
