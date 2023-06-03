@@ -1,40 +1,40 @@
-import { Account } from './account'
 import {
+  BelongsTo,
   Column,
   CreatedAt,
   DataType,
   Default,
   DeletedAt,
-  HasMany,
   Index,
   Model,
   PrimaryKey,
   Table,
-  Unique,
   UpdatedAt,
 } from 'sequelize-typescript'
-import { Saving } from './saving'
-import { Goal } from './goal'
+import { User } from './user'
+import Decimal from 'decimal.js'
 
 @Table({ paranoid: true })
-export class User extends Model {
+export class Saving extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column({ type: DataType.UUID, allowNull: false })
   declare id: string
 
-  @Unique
   @Column({ type: DataType.STRING, allowNull: false })
-  declare email: string
+  declare name: string
 
-  @HasMany(() => Account, 'userId')
-  declare accounts: Account[]
+  @Column({
+    type: DataType.DECIMAL,
+    allowNull: false,
+    get() {
+      return new Decimal(this.getDataValue('amount'))
+    },
+  })
+  declare amount: Decimal
 
-  @HasMany(() => Saving, 'userId')
-  declare savings: Saving[]
-
-  @HasMany(() => Goal, 'userId')
-  declare goals: Goal[]
+  @BelongsTo(() => User, 'userId')
+  declare user: User
 
   @CreatedAt
   declare creationDate: Date

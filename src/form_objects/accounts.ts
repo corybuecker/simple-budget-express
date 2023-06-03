@@ -2,25 +2,19 @@ import {
   IsBoolean,
   IsNumber,
   IsOptional,
-  IsUUID,
   Length,
   Min,
   validate,
 } from 'class-validator'
 import { ValidationError } from 'class-validator/types/validation/ValidationError'
 
-export type Account = {
-  id?: string
+export interface FormAccount {
   name: string
   amount: number
   debt: boolean
 }
 
-export class AccountValidator {
-  @IsOptional()
-  @IsUUID()
-  public id: string | undefined
-
+export class FormAccountValidator {
   @Length(1, 255)
   public name: string
 
@@ -32,14 +26,13 @@ export class AccountValidator {
   @IsBoolean()
   public debt: boolean
 
-  constructor({ id, name, amount, debt }: Account) {
-    this.id = id
+  constructor({ name, amount, debt }: FormAccount) {
     this.name = name
     this.amount = amount
     this.debt = debt ?? false
   }
 
   public async validate(): Promise<ValidationError[]> {
-    return validate(this)
+    return validate(this, { whitelist: true, forbidNonWhitelisted: true })
   }
 }

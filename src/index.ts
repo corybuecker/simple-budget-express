@@ -1,6 +1,10 @@
 import { ApplicationBuilder } from './application_builder'
+import { Sequelize } from 'sequelize-typescript'
+import { connectionOptions } from './services/database'
 
 const applicationBuilder = new ApplicationBuilder()
+
+new Sequelize(connectionOptions)
 
 applicationBuilder
   .getApplication()

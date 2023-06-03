@@ -1,5 +1,4 @@
 import fastify, { FastifyInstance } from 'fastify'
-import { Database } from './services/database'
 import fastifyStatic from '@fastify/static'
 import path from 'path'
 import fastifyCookie from '@fastify/cookie'
@@ -9,7 +8,8 @@ import { User } from './models/user'
 import registerAuthenticationController from './controllers/authentication'
 import registerAccountsController from './controllers/accounts'
 import { compileFile } from 'pug'
-import { Sequelize } from 'sequelize-typescript'
+import registerSavingsController from './controllers/savings'
+import registerGoalsController from './controllers/goals'
 
 type ApplicationLocals = {
   user: User
@@ -37,9 +37,7 @@ export class ApplicationBuilder {
     })
   }
 
-  public async getApplication(existingConnection?: Sequelize) {
-    const connection = existingConnection ?? (await Database.getConnection())
-
+  public async getApplication() {
     await this.application.register(fastifyStatic, {
       root: path.join(__dirname, '../public'),
     })
@@ -60,26 +58,19 @@ export class ApplicationBuilder {
       secret: this.cookieSecret,
       rolling: true,
       cookie: { secure: process.env.ENV === 'production' },
-      store: new SessionStore(connection),
+      store: new SessionStore(),
     })
 
-    this.application.addHook('onClose', (_, done) =>
-      connection
-        .close()
-        .then(() => done())
-        .catch(done)
-    )
-
-    this.application.decorateRequest<ApplicationLocals>('locals', {
-      user: new User(),
-    })
+    this.application.decorateRequest('locals', null)
     this.application.addHook('onRequest', (request, reply, done) => {
-      request.locals.user = new User()
+      request.locals = { user: new User() }
       return done()
     })
 
     registerAuthenticationController(this.application)
     registerAccountsController(this.application)
+    registerSavingsController(this.application)
+    registerGoalsController(this.application)
 
     const template = compileFile('./src/views/index.pug')
 

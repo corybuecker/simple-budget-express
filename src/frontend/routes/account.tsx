@@ -1,12 +1,12 @@
 import { ValidationError } from 'class-validator/types/validation/ValidationError'
-import { useState } from 'react'
 import * as React from 'react'
+import { useState } from 'react'
 import { Form, useLoaderData } from 'react-router-dom'
 import { Account } from '../loaders/accounts'
 import {
-  Account as AccountEntity,
-  AccountValidator,
-} from '../entities/accounts'
+  FormAccount as AccountEntity,
+  FormAccountValidator,
+} from '../form_objects/accounts'
 import {
   buildFormValidator,
   FormError,
@@ -16,8 +16,7 @@ import {
 export const formValidator: FormValidator = async (
   formData: FormData
 ): Promise<ValidationError[]> => {
-  const accountValidator = new AccountValidator({
-    id: (formData.get('id') as string) ?? null,
+  const accountValidator = new FormAccountValidator({
     name: formData.get('name') as string,
     amount: Number(formData.get('amount')),
     debt: Boolean(formData.get('debt')),

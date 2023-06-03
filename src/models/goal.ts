@@ -14,8 +14,17 @@ import {
 import { User } from './user'
 import Decimal from 'decimal.js'
 
+enum GoalRecurrence {
+  NEVER = 'never',
+  DAILY = 'daily',
+  WEEKLY = 'weekly',
+  MONTHLY = 'monthly',
+  QUARTERLY = 'quarterly',
+  YEARLY = 'yearly',
+}
+
 @Table({ paranoid: true })
-export class Account extends Model {
+export class Goal extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column({ type: DataType.UUID, allowNull: false })
@@ -34,11 +43,14 @@ export class Account extends Model {
   declare amount: Decimal
 
   @Column({
-    type: DataType.BOOLEAN,
     allowNull: false,
-    defaultValue: false,
+    type: DataType.ENUM(...Object.values(GoalRecurrence)),
+    defaultValue: GoalRecurrence.MONTHLY,
   })
-  declare debt: boolean
+  declare recurrence: GoalRecurrence
+
+  @Column({ allowNull: true })
+  declare targetDate: Date
 
   @BelongsTo(() => User, 'userId')
   declare user: User

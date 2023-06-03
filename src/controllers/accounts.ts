@@ -1,13 +1,7 @@
 import { FastifyInstance, FastifyRequest } from 'fastify'
 import AuthenticatedRouteFactory from './authenticated_route_factory'
-import { User } from '../models/user'
 import { Account } from '../models/account'
-import { AccountValidator } from '../frontend/entities/accounts'
-
-export type AccountsControllerRequestTypes = {
-  Body: Account
-  Params: { id: string }
-}
+import { FormAccount, FormAccountValidator } from '../form_objects/accounts'
 
 const registerAccountsController = (application: FastifyInstance) => {
   const getAccounts = new AuthenticatedRouteFactory<Account[]>({
@@ -16,37 +10,41 @@ const registerAccountsController = (application: FastifyInstance) => {
     handler: async (request: FastifyRequest, _) => {
       return request.locals.user.accounts ?? []
     },
-    additionalRelationsForUser: ['accounts'],
+    additionalRelationsForUser: Account,
   })
 
-  const createAccount = new AuthenticatedRouteFactory<Account | Error>({
+  const createAccount = new AuthenticatedRouteFactory<Account | void>({
     url: '/api/accounts',
     method: 'POST',
-    handler: async (request: FastifyRequest<{ Body: Account }>, _) => {
-      const accountValidator = new AccountValidator(request.body)
+    handler: async (request: FastifyRequest<{ Body: FormAccount }>, reply) => {
+      const accountValidator = new FormAccountValidator(request.body)
+      const errors = await accountValidator.validate()
 
-      if ((await accountValidator.validate()).length > 0) {
-        throw Error('account is not valid')
+      if (errors.length > 0) {
+        throw { error: errors }
       }
 
       return request.locals.user.$create<Account>('account', request.body)
     },
-    additionalRelationsForUser: ['accounts'],
+    errorHandler: async (error, request, reply) => {
+      await reply.code(400).send(error)
+    },
   })
 
   const getAccount = new AuthenticatedRouteFactory<Account>({
     url: '/api/accounts/:id',
     method: 'GET',
     handler: async (request: FastifyRequest<{ Params: { id: string } }>, _) => {
-      const user = await User.findOne({
-        where: { id: request.locals.user?.id },
-        rejectOnEmpty: true,
-        include: ['accounts'],
-      })
-
-      return user.accounts.filter((a) => a.id === request.params.id)[0]
+      const account = request.locals.user.accounts.find(
+        (a) => a.id === request.params.id
+      )
+      if (!account) throw { error: 'not found' }
+      return account
     },
-    additionalRelationsForUser: ['accounts'],
+    additionalRelationsForUser: Account,
+    errorHandler: async (error, request, reply) => {
+      await reply.code(404).send(error)
+    },
   })
 
   const patchAccount = new AuthenticatedRouteFactory<Account>({
@@ -54,23 +52,23 @@ const registerAccountsController = (application: FastifyInstance) => {
     method: 'PUT',
     handler: async (
       request: FastifyRequest<{
-        Body: Omit<Account, 'id' | 'user'>
+        Body: FormAccount
         Params: { id: string }
       }>,
       _
     ) => {
+      const accountValidator = new FormAccountValidator(request.body)
+      const errors = await accountValidator.validate()
+
+      if (errors.length > 0) throw errors
+
       const account = request.locals.user.accounts.filter(
         (a) => a.id === request.params.id
       )[0]
-
-      account.name = request.body.name
-      account.amount = request.body.amount
-      account.debt = request.body.debt
-      await account.save()
-
+      await account.setAttributes(accountValidator).save()
       return account
     },
-    additionalRelationsForUser: ['accounts'],
+    additionalRelationsForUser: Account,
   })
 
   application.route(getAccounts.authenticated())
