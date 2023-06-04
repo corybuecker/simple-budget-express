@@ -9,9 +9,9 @@ import {
   UpdatedAt,
 } from 'sequelize-typescript'
 
-@Table
+@Table({ paranoid: true })
 export class Session extends Model {
-  @Column({ primaryKey: true })
+  @Column({ primaryKey: true, autoIncrement: true })
   declare id: number
 
   @Index({

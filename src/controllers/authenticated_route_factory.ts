@@ -1,17 +1,25 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { User } from '../models/user'
-import { AccountsControllerRequestTypes } from './accounts'
+import { Account } from '../models/account'
+import { ModelStatic } from 'sequelize/types/model'
+import { Saving } from '../models/saving'
+import { Goal } from '../models/goal'
 
-export type RequestT = AccountsControllerRequestTypes
+export type PossibleRelations = ModelStatic<Account | Saving | Goal>
 
 type UnauthenticatedRoute<T> = {
   method: 'GET' | 'POST' | 'PUT'
   url: string
   handler: (
-    request: FastifyRequest<RequestT>,
+    request: FastifyRequest<{ Body: any; Params: { id: string } }>,
     reply: FastifyReply
   ) => Promise<T>
-  additionalRelationsForUser: string[]
+  additionalRelationsForUser?: PossibleRelations
+  errorHandler?: (
+    error: Error,
+    request: FastifyRequest,
+    reply: FastifyReply
+  ) => Promise<void>
 }
 
 export type AuthenticatedRoute<T> = Omit<
@@ -30,6 +38,7 @@ class AuthenticatedRouteFactory<T> {
       method: this.route.method,
       preHandler: this.generatePreHandler(),
       handler: this.route.handler,
+      errorHandler: this.route.errorHandler,
     }
   }
 

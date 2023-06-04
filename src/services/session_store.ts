@@ -3,9 +3,8 @@ import EventEmitter from 'events'
 import { Session as FastifySession } from 'fastify'
 import { Session as SessionModel } from '../models/session'
 import { Op } from 'sequelize'
-import { Sequelize } from 'sequelize-typescript'
 
-const SESSION_LIFETIME = 60000
+const SESSION_LIFETIME = 10 * 1000 * 60
 
 export type SimpleBudgetSession = {
   email?: string
@@ -22,7 +21,7 @@ export default class SessionStore
   extends EventEmitter
   implements ISessionStore
 {
-  constructor(private readonly connection: Sequelize) {
+  constructor() {
     super()
   }
 
@@ -71,27 +70,23 @@ export default class SessionStore
     sessionId: string,
     { simpleBudgetSession }: FastifySession
   ) {
-    await this.connection.transaction(async (t) => {
-      const currentTime = new Date()
-      const newExpiration = new Date(currentTime.getTime() + SESSION_LIFETIME)
+    const currentTime = new Date()
+    const newExpiration = new Date(currentTime.getTime() + SESSION_LIFETIME)
 
-      const session = await SessionModel.findOne({
-        where: { sessionId, expiredAt: { [Op.gt]: new Date() } },
-        transaction: t,
-      })
-
-      if (!session) {
-        await SessionModel.create({
-          sessionId,
-          json: simpleBudgetSession,
-          expiredAt: newExpiration,
-          transaction: t,
-        })
-      } else {
-        session.json = simpleBudgetSession
-        session.expiredAt = newExpiration
-        await session.save({ transaction: t })
-      }
+    const session = await SessionModel.findOne({
+      where: { sessionId, expiredAt: { [Op.gt]: new Date() } },
     })
+
+    if (!session) {
+      await SessionModel.create({
+        sessionId,
+        json: simpleBudgetSession,
+        expiredAt: newExpiration,
+      })
+    } else {
+      session.json = simpleBudgetSession
+      session.expiredAt = newExpiration
+      await session.save()
+    }
   }
 }

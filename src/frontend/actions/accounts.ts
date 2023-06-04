@@ -1,5 +1,5 @@
 import { ActionFunctionArgs } from 'react-router-dom'
-import { Account } from '../entities/accounts'
+import { FormAccount } from '../form_objects/accounts'
 
 const mapValidatedFormDataToObject = (
   formData: FormData
@@ -25,7 +25,7 @@ const create = async ({ request }: ActionFunctionArgs) => {
     throw Error('cannot save account')
   }
 
-  return (await response.json()) as Account
+  return (await response.json()) as FormAccount
 }
 
 const update = async ({ request, params }: ActionFunctionArgs) => {
@@ -45,7 +45,7 @@ const update = async ({ request, params }: ActionFunctionArgs) => {
     throw Error('cannot save account')
   }
 
-  return (await response.json()) as Account
+  return (await response.json()) as FormAccount
 }
 
 export { create as createAccountAction, update as updateAccountAction }
