@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyRequest } from 'fastify'
 import AuthenticatedRouteFactory from './authenticated_route_factory'
 import { Goal } from '../models/goal'
 import { FormGoal, FormGoalValidator } from '../form_objects/goals'
+import { plainToInstance } from 'class-transformer'
 
 const registerGoalsController = (application: FastifyInstance) => {
   const getGoals = new AuthenticatedRouteFactory<Goal[]>({
@@ -17,14 +18,14 @@ const registerGoalsController = (application: FastifyInstance) => {
     url: '/api/goals',
     method: 'POST',
     handler: async (request: FastifyRequest<{ Body: FormGoal }>, reply) => {
-      const goalValidator = new FormGoalValidator(request.body)
+      const goalValidator = plainToInstance(FormGoalValidator, request.body)
       const errors = await goalValidator.validate()
 
       if (errors.length > 0) {
-        throw { error: errors }
+        throw { errors: errors }
       }
 
-      return request.locals.user.$create<Goal>('goal', request.body)
+      return request.locals.user.$create<Goal>('goal', goalValidator)
     },
     errorHandler: async (error, request, reply) => {
       await reply.code(400).send(error)
@@ -57,7 +58,7 @@ const registerGoalsController = (application: FastifyInstance) => {
       }>,
       _
     ) => {
-      const goalValidator = new FormGoalValidator(request.body)
+      const goalValidator = plainToInstance(FormGoalValidator, request.body)
       const errors = await goalValidator.validate()
 
       if (errors.length > 0) throw errors

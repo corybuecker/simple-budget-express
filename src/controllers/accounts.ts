@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyRequest } from 'fastify'
 import AuthenticatedRouteFactory from './authenticated_route_factory'
 import { Account } from '../models/account'
 import { FormAccount, FormAccountValidator } from '../form_objects/accounts'
+import { plainToClass } from 'class-transformer'
 
 const registerAccountsController = (application: FastifyInstance) => {
   const getAccounts = new AuthenticatedRouteFactory<Account[]>({
@@ -17,14 +18,14 @@ const registerAccountsController = (application: FastifyInstance) => {
     url: '/api/accounts',
     method: 'POST',
     handler: async (request: FastifyRequest<{ Body: FormAccount }>, reply) => {
-      const accountValidator = new FormAccountValidator(request.body)
+      const accountValidator = plainToClass(FormAccountValidator, request.body)
       const errors = await accountValidator.validate()
 
       if (errors.length > 0) {
         throw { error: errors }
       }
 
-      return request.locals.user.$create<Account>('account', request.body)
+      return request.locals.user.$create<Account>('account', accountValidator)
     },
     errorHandler: async (error, request, reply) => {
       await reply.code(400).send(error)
@@ -57,7 +58,7 @@ const registerAccountsController = (application: FastifyInstance) => {
       }>,
       _
     ) => {
-      const accountValidator = new FormAccountValidator(request.body)
+      const accountValidator = plainToClass(FormAccountValidator, request.body)
       const errors = await accountValidator.validate()
 
       if (errors.length > 0) throw errors

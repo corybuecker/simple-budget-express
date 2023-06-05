@@ -6,6 +6,8 @@ import ErrorPage from './errors'
 import Nav from './nav'
 import { accountsRoutes } from './routes/accounts'
 import Authentication from './routes/authentication'
+import { goalsRoutes } from './routes/goals'
+import { savingsRoutes } from './routes/savings'
 
 const Main = () => {
   return (
@@ -26,16 +28,8 @@ const router = createBrowserRouter([
   },
   { path: '/authentication', element: <Authentication /> },
   accountsRoutes,
-  {
-    path: '/savings',
-    element: <Main />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: '/goals',
-    element: <Main />,
-    errorElement: <ErrorPage />,
-  },
+  goalsRoutes,
+  savingsRoutes,
 ])
 
 const mainElements = document.getElementsByTagName('main')

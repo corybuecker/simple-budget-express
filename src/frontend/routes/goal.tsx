@@ -2,11 +2,12 @@ import { ValidationError } from 'class-validator/types/validation/ValidationErro
 import * as React from 'react'
 import { useState } from 'react'
 import { Form, useLoaderData } from 'react-router-dom'
-import { Account } from '../loaders/accounts'
+import { Goal } from '../loaders/goals'
 import {
-  FormAccount as AccountEntity,
-  FormAccountValidator,
-} from '../form_objects/accounts'
+  FormGoal as GoalEntity,
+  FormGoalValidator,
+  GoalRecurrence,
+} from '../form_objects/goals'
 import {
   buildFormValidator,
   FormError,
@@ -17,23 +18,20 @@ import { plainToInstance } from 'class-transformer'
 export const formValidator: FormValidator = async (
   formData: FormData
 ): Promise<ValidationError[]> => {
-  const accountValidator = plainToInstance(
-    FormAccountValidator,
+  const goalValidator = plainToInstance(
+    FormGoalValidator,
     Object.fromEntries(formData)
   )
 
-  return accountValidator.validate()
+  return goalValidator.validate()
 }
 
-export const EditAccount = () => {
-  const account = useLoaderData() as Account
+export const EditGoal = () => {
+  const goal = useLoaderData() as Goal
 
-  const [formErrors, setFormErrors] = useState<FormError<AccountEntity>>({})
+  const [formErrors, setFormErrors] = useState<FormError<GoalEntity>>({})
 
-  const validate = buildFormValidator<AccountEntity>(
-    formValidator,
-    setFormErrors
-  )
+  const validate = buildFormValidator<GoalEntity>(formValidator, setFormErrors)
 
   return (
     <Form
@@ -48,7 +46,7 @@ export const EditAccount = () => {
         <input
           name={'name'}
           id={'name'}
-          defaultValue={account.name}
+          defaultValue={goal.name}
           className={'border p-2'}
         />
         {formErrors.name && (
@@ -63,22 +61,12 @@ export const EditAccount = () => {
           type={'number'}
           name={'amount'}
           id={'amount'}
-          defaultValue={account.amount}
+          defaultValue={goal.amount}
           className={'border p-2'}
         />
         {formErrors.amount && (
           <span className={'bg-amber-200'}>{formErrors.amount}</span>
         )}
-      </div>
-      <div className={'flex flex-col'}>
-        <label htmlFor={'debt'}>Debt</label>
-        <input
-          type={'checkbox'}
-          name={'debt'}
-          id={'debt'}
-          defaultChecked={account.debt}
-          className={'w-4'}
-        />
       </div>
       <button disabled={Object.values(formErrors).length > 0} type="submit">
         Save
@@ -86,16 +74,14 @@ export const EditAccount = () => {
     </Form>
   )
 }
-export const NewAccount = () => {
-  const [formErrors, setFormErrors] = useState<FormError<AccountEntity>>({})
+export const NewGoal = () => {
+  const [formErrors, setFormErrors] = useState<FormError<GoalEntity>>({})
 
-  const validate = buildFormValidator<AccountEntity>(
-    formValidator,
-    setFormErrors
-  )
+  const validate = buildFormValidator<GoalEntity>(formValidator, setFormErrors)
 
   return (
     <Form method="post" onChange={validate}>
+      <div>{JSON.stringify(formErrors)}</div>
       <label htmlFor={'name'}>Name</label>
       <input name="name" />
       {formErrors.name && (
@@ -106,8 +92,18 @@ export const NewAccount = () => {
       {formErrors.amount && (
         <span className={'bg-amber-200'}>{formErrors.amount}</span>
       )}
-      <label htmlFor={'debt'}>Debt</label>
-      <input type={'checkbox'} name="debt" />
+      <label htmlFor={'recurrence'}>Recurrence</label>
+      <select name="recurrence">
+        <option value={GoalRecurrence.NEVER}>{GoalRecurrence.NEVER}</option>
+      </select>
+      {formErrors.recurrence && (
+        <span className={'bg-amber-200'}>{formErrors.recurrence}</span>
+      )}
+      <label htmlFor={'targetDate'}>Target date</label>
+      <input type="date" name="targetDate" />
+      {formErrors.targetDate && (
+        <span className={'bg-amber-200'}>{formErrors.targetDate}</span>
+      )}
       <button disabled={Object.values(formErrors).length > 0} type="submit">
         Save
       </button>

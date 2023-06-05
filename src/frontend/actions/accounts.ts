@@ -1,23 +1,15 @@
 import { ActionFunctionArgs } from 'react-router-dom'
-import { FormAccount } from '../form_objects/accounts'
-
-const mapValidatedFormDataToObject = (
-  formData: FormData
-): { id: string | undefined; name: string; amount: number; debt: boolean } => {
-  return {
-    id: (formData.get('id') as string) ?? undefined,
-    name: formData.get('name') as string,
-    amount: Number(formData.get('amount')),
-    debt: Boolean(formData.get('debt')),
-  }
-}
+import { FormAccount, FormAccountValidator } from '../form_objects/accounts'
+import { plainToInstance } from 'class-transformer'
 
 const create = async ({ request }: ActionFunctionArgs) => {
+  const data = plainToInstance(
+    FormAccountValidator,
+    Object.fromEntries(await request.formData())
+  )
   const response = await fetch(`/api/accounts`, {
     method: 'post',
-    body: JSON.stringify(
-      mapValidatedFormDataToObject(await request.formData())
-    ),
+    body: JSON.stringify(data),
     headers: { 'Content-Type': 'application/json' },
   })
 
@@ -35,9 +27,7 @@ const update = async ({ request, params }: ActionFunctionArgs) => {
 
   const response = await fetch(`/api/accounts/${params.accountId}`, {
     method: 'put',
-    body: JSON.stringify(
-      mapValidatedFormDataToObject(await request.formData())
-    ),
+    body: JSON.stringify(Object.fromEntries(await request.formData())),
     headers: { 'Content-Type': 'application/json' },
   })
 
