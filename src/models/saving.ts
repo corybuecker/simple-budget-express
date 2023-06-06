@@ -28,7 +28,7 @@ export class Saving extends Model {
     type: DataType.DECIMAL,
     allowNull: false,
     get() {
-      return new Decimal(this.getDataValue('amount'))
+      return new Decimal(this.getDataValue('amount') as number)
     },
   })
   declare amount: Decimal

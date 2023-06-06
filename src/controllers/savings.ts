@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyRequest } from 'fastify'
 import AuthenticatedRouteFactory from './authenticated_route_factory'
 import { Saving } from '../models/saving'
 import { FormSaving, FormSavingValidator } from '../form_objects/savings'
+import { plainToInstance } from 'class-transformer'
 
 const registerSavingsController = (application: FastifyInstance) => {
   const getSavings = new AuthenticatedRouteFactory<Saving[]>({
@@ -17,14 +18,14 @@ const registerSavingsController = (application: FastifyInstance) => {
     url: '/api/savings',
     method: 'POST',
     handler: async (request: FastifyRequest<{ Body: FormSaving }>, reply) => {
-      const savingValidator = new FormSavingValidator(request.body)
+      const savingValidator = plainToInstance(FormSavingValidator, request.body)
       const errors = await savingValidator.validate()
 
       if (errors.length > 0) {
-        throw { error: errors }
+        throw { errors: errors }
       }
 
-      return request.locals.user.$create<Saving>('saving', request.body)
+      return request.locals.user.$create<Saving>('saving', savingValidator)
     },
     errorHandler: async (error, request, reply) => {
       await reply.code(400).send(error)
@@ -57,7 +58,7 @@ const registerSavingsController = (application: FastifyInstance) => {
       }>,
       _
     ) => {
-      const savingValidator = new FormSavingValidator(request.body)
+      const savingValidator = plainToInstance(FormSavingValidator, request.body)
       const errors = await savingValidator.validate()
 
       if (errors.length > 0) throw errors

@@ -4,14 +4,18 @@ import { Account } from '../models/account'
 import { ModelStatic } from 'sequelize/types/model'
 import { Saving } from '../models/saving'
 import { Goal } from '../models/goal'
+import { FormAccount } from '../form_objects/accounts'
+import { FormGoal } from '../form_objects/goals'
+import { FormSaving } from '../form_objects/savings'
 
+export type BodyT = FormAccount & FormGoal & FormSaving
 export type PossibleRelations = ModelStatic<Account | Saving | Goal>
 
 type UnauthenticatedRoute<T> = {
   method: 'GET' | 'POST' | 'PUT'
   url: string
   handler: (
-    request: FastifyRequest<{ Body: any; Params: { id: string } }>,
+    request: FastifyRequest<{ Body: BodyT; Params: { id: string } }>,
     reply: FastifyReply
   ) => Promise<T>
   additionalRelationsForUser?: PossibleRelations

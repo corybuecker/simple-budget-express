@@ -2,35 +2,31 @@ import {
   IsBoolean,
   IsNumber,
   IsOptional,
+  IsPositive,
   Length,
-  Min,
   validate,
 } from 'class-validator'
 import { ValidationError } from 'class-validator/types/validation/ValidationError'
+import { Transform } from 'class-transformer'
 
 export interface FormAccount {
   name: string
-  amount: number
+  amount: string
   debt: boolean
 }
 
 export class FormAccountValidator {
   @Length(1, 255)
-  public name: string
+  public declare name: string
 
   @IsNumber()
-  @Min(1)
-  public amount: number
+  @IsPositive()
+  @Transform(({ value }) => Number(value as unknown))
+  public declare amount: number
 
   @IsOptional()
   @IsBoolean()
-  public debt: boolean
-
-  constructor({ name, amount, debt }: FormAccount) {
-    this.name = name
-    this.amount = amount
-    this.debt = debt ?? false
-  }
+  public declare debt: boolean
 
   public async validate(): Promise<ValidationError[]> {
     return validate(this, { whitelist: true, forbidNonWhitelisted: true })

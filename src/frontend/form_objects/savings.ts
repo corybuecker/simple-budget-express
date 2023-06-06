@@ -1,5 +1,6 @@
-import { IsNumber, Length, Min, validate } from 'class-validator'
+import { IsNumber, IsPositive, Length, validate } from 'class-validator'
 import { ValidationError } from 'class-validator/types/validation/ValidationError'
+import { Transform } from 'class-transformer'
 
 export interface FormSaving {
   name: string
@@ -8,16 +9,12 @@ export interface FormSaving {
 
 export class FormSavingValidator {
   @Length(1, 255)
-  public name: string
+  public declare name: string
 
   @IsNumber()
-  @Min(1)
-  public amount: number
-
-  constructor({ name, amount }: FormSaving) {
-    this.name = name
-    this.amount = amount
-  }
+  @IsPositive()
+  @Transform(({ value }) => Number(value))
+  public declare amount: number
 
   public async validate(): Promise<ValidationError[]> {
     return validate(this, { whitelist: true, forbidNonWhitelisted: true })
