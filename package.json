@@ -43,7 +43,7 @@
     "pug": "3.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-router-dom": "6.11.2",
+    "react-router-dom": "6.12.1",
     "reflect-metadata": "0.1.13",
     "sequelize": "6.32.0",
     "sequelize-typescript": "2.1.5",
